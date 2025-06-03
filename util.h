@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <pcap.h>
 #include <pthread.h>
-#include "ethhdr.h"
 #include "mac.h"
 #include "ip.h"
 
@@ -33,11 +32,6 @@ void IntIpChar(char* tar, uint32_t value){
 
 #pragma pack(push, 1)
 
-struct EthIpPacket final {
-    EthHdr eth_;
-    IpHdr ip_;
-    char *data_;
-};
 
 #pragma pack(pop)
 
