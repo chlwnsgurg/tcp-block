@@ -8,7 +8,14 @@
 
 #include <sys/socket.h>
 
-#include "util.h"
+#include <pthread.h>
+#include "mac.h"
+
+#include <fstream>
+#include <sys/ioctl.h>
+#include <net/if.h>
+#include <unistd.h>
+
 #include "block.h"
 
 
@@ -60,6 +67,27 @@ char *strnstr(const char *haystack, const char *needle, size_t len) {
     }
 
     return NULL;
+}
+
+bool get_mac(char* dev, uint8_t* mac) {
+	struct ifreq ifr;
+	int sfd = socket(AF_INET, SOCK_DGRAM, 0),ret;
+	if(sfd < 0){
+		printf("Faile to get interface MAC address - socket() failed - %m\n");
+		return false;
+	}
+
+	strncpy(ifr.ifr_name, dev, IFNAMSIZ);
+	ret = ioctl(sfd, SIOCGIFHWADDR, &ifr);
+	if(ret < 0){
+		printf("Fail to get interface MAC address - ioctl(SIOCSIFHWADDR) failed - %m\n");
+		close(sfd);
+		return false;
+	}
+
+	memcpy(mac, ifr.ifr_hwaddr.sa_data, Mac::SIZE);
+	close(sfd);
+	return true;
 }
 
 

@@ -1,15 +1,14 @@
-all: tcp-block
+LDLIBS=-lpcap
 
-main.o: util.h main.cpp
+all: tcp-block
 
 mac.o: mac.h mac.cpp
 
-ip.o: ip.h ip.cpp
+main.o: libnet.h main.cpp
 
-block.o: libnet.h block.h block.c mac.o ip.o
+block.o: libnet.h block.h block.cpp
 
-tcp-block: main.o block.o
+tcp-block: main.o block.o mac.o
 	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
-
 clean:
 	rm -f tcp-block *.o
