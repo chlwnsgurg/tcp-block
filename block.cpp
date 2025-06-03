@@ -45,8 +45,8 @@ void forwardBlock(pcap_t* pcap, char* org_pkt, uint8_t* amac, struct LEN_ARGS* l
 	tcp_hdr->th_flags |= TH_ACK;
 
 	struct my_hdr hdr;
-	hdr.src = ipv4_hdr->ip_src;
-	hdr.dst = ipv4_hdr->ip_dst;
+	hdr.src = ipv4_hdr->ip_src.s_addr;
+	hdr.dst = ipv4_hdr->ip_dst.s_addr;
 	hdr.ph = 0;
     	hdr.pro = IPPROTO_TCP;
     	hdr.tcp_len = htons(len_args->tcp_len);
@@ -75,12 +75,12 @@ void backwardBlock(int sockfd, char* org_pkt, uint8_t* amac, struct LEN_ARGS* le
 	struct sockaddr_in dest_addr;
 	dest_addr.sin_family = AF_INET;
     	dest_addr.sin_port = tcp_hdr->th_sport;
-    	dest_addr.sin_addr.s_addr = ipv4_hdr->ip_src;
+    	dest_addr.sin_addr.s_addr = ipv4_hdr->ip_src.s_addr;
     	
     	// IP_HDR
-    	uint32_t tmp = ipv4_hdr->ip_src;
+    	uint32_t tmp = ipv4_hdr->ip_src.s_addr;
     	ipv4_hdr->ip_src = ipv4_hdr->ip_dst;
-    	ipv4_hdr->ip_dst = tmp;
+    	ipv4_hdr->ip_dst.s_addr = tmp;
     	ipv4_hdr->ip_ttl = 128;
     	ipv4_hdr->ip_len = htons(len_args->tcp_len + len_args->ip_len + strlen(warn));
     	ipv4_hdr->ip_sum = 0;
@@ -98,8 +98,8 @@ void backwardBlock(int sockfd, char* org_pkt, uint8_t* amac, struct LEN_ARGS* le
 	tcp_hdr->th_dport = tmp;
 
 	struct my_hdr hdr;
-	hdr.src = ipv4_hdr->ip_src;
-	hdr.dst = ipv4_hdr->ip_dst;
+	hdr.src = ipv4_hdr->ip_src.s_addr;
+	hdr.dst = ipv4_hdr->ip_dst.s_addr;
 	hdr.ph = 0;
     	hdr.pro = IPPROTO_TCP;
     	hdr.tcp_len = htons(len_args->tcp_len + strlen(warn));
