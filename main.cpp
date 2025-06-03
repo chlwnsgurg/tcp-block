@@ -1,4 +1,12 @@
+#include <pcap.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <netinet/in.h>
 
+#include <stdlib.h>
+#include <string.h>
+
+#include <sys/socket.h>
 
 #include "util.h"
 #include "block.h"
